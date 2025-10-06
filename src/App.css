@@ -3,71 +3,59 @@
   --color-bg-secondary: #2b2d31;
   --color-bg-tertiary: #3a3d43;
   --color-text-primary: #f1f1f1;
-  --color-accent-user: #4287f5; 
-  --color-accent-ai: #1abc9c;   
+  --color-accent-user: #4287f5;
+  --color-accent-ai: #1abc9c;
   --color-danger: #e74c3c;
   --shadow: rgba(0, 0, 0, 0.4);
   --radius: 14px;
 }
 
-/* ------------------------
-   GLOBAL STRUCTURE
------------------------- */
 * {
   box-sizing: border-box;
 }
 
 html, body, #root {
-  height: 100%;
-  width: 100%;
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", Arial, sans-serif;
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
-  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+/* ✅ corrige le problème de header caché */
+body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
-/* ------------------------
-   CHAT MAIN CONTAINER
------------------------- */
-.chat-container {
-  flex-grow: 1;
-  display: flex;
   flex-direction: column;
+  min-height: 100vh; /* utilise min-height au lieu de height */
+  width: 100%;
   background-color: var(--color-bg-secondary);
-  height: 100vh;
-  overflow: hidden;
 }
 
-/* ------------------------
-   HEADER FIXÉ
------------------------- */
+/* --- HEADER --- */
 .chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: var(--color-bg-tertiary);
-  padding: 10px 15px;
+  padding: 12px 15px;
   border-bottom: 1px solid #000;
-  flex-shrink: 0;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
 }
 
 .chat-header h1 {
   margin: 0;
   flex: 1;
   text-align: center;
-  font-size: clamp(1em, 2vw, 1.5em);
+  font-size: clamp(1em, 2.5vw, 1.5em);
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,25 +72,33 @@ html, body, #root {
   font-size: clamp(0.9em, 2vw, 1.1em);
   transition: 0.2s;
 }
+
 .toggle-history:hover {
   background-color: #50545c;
   transform: scale(1.05);
 }
 
-/* ------------------------
-   MESSAGE AREA
------------------------- */
+/* --- CONTENU --- */
+.chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* --- ZONE DE MESSAGES --- */
 .messages-display {
-  flex-grow: 1;
+  flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px;
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Scroll doux et caché sur mobile */
 .messages-display::-webkit-scrollbar {
   width: 6px;
 }
@@ -111,81 +107,58 @@ html, body, #root {
   border-radius: 4px;
 }
 
-/* IA à gauche */
+/* --- MESSAGES --- */
+.message.ai,
+.message.user {
+  border-radius: var(--radius);
+  margin: 8px 0;
+  padding: 12px 18px;
+  max-width: 85%;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px var(--shadow);
+  font-size: clamp(0.9em, 2.2vw, 1em);
+}
+
 .message.ai {
   align-self: flex-start;
   background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
-  border-radius: var(--radius);
-  border-bottom-left-radius: 4px;
-  margin: 8px 0;
-  padding: 12px 18px;
-  max-width: 85%;
-  line-height: 1.4;
-  font-size: clamp(0.9em, 2vw, 1em);
-  box-shadow: 0 2px 6px var(--shadow);
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
 }
 
-/* Utilisateur à droite */
 .message.user {
   align-self: flex-end;
   background: var(--color-accent-user);
   color: #fff;
-  border-radius: var(--radius);
-  border-bottom-right-radius: 4px;
-  margin: 8px 0;
-  padding: 12px 18px;
-  max-width: 85%;
-  font-size: clamp(0.9em, 2vw, 1em);
-  box-shadow: 0 2px 6px var(--shadow);
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
 }
 
-/* Zone de code dans les messages */
-.message code, .message pre {
+/* --- BLOCS DE CODE --- */
+.message pre, .message code {
   background-color: rgba(0, 0, 0, 0.3);
-  padding: 6px 10px;
   border-radius: 8px;
-  display: block;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  max-width: 100%;
+  padding: 6px 10px;
   font-family: monospace;
   font-size: 0.9em;
-  margin-top: 5px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
-/* Label "Vous" / "IA" */
-.sender-label {
-  display: block;
-  font-weight: bold;
-  font-size: 0.85em;
-  opacity: 0.8;
-  margin-bottom: 5px;
-}
-
-.loading {
-  text-align: center;
-  color: var(--color-accent-ai);
-}
-
-/* ------------------------
-   INPUT AREA
------------------------- */
+/* --- INPUT AREA --- */
 .input-area {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 15px;
+  padding: 10px 15px;
   background-color: var(--color-bg-dark);
   border-top: 1px solid #3c3f46;
   flex-wrap: wrap;
-  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
 }
 
 .input-area input {
@@ -197,8 +170,8 @@ html, body, #root {
   border: 1px solid var(--color-bg-tertiary);
   font-size: clamp(1em, 2.5vw, 1.1em);
   min-width: 180px;
-  transition: box-shadow 0.2s;
 }
+
 .input-area input:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-accent-ai);
@@ -225,7 +198,7 @@ html, body, #root {
   cursor: not-allowed;
 }
 
-/* Bouton Micro */
+/* Microphone */
 .microphone-button {
   background-color: var(--color-bg-tertiary);
   color: var(--color-text-primary);
@@ -238,10 +211,13 @@ html, body, #root {
   align-items: center;
   transition: background-color 0.3s, transform 0.2s;
 }
+
 .microphone-button:hover {
   background-color: var(--color-accent-ai);
   color: white;
 }
+
+/* Animation d’écoute */
 .microphone-button.listening {
   background-color: var(--color-danger);
   animation: pulse 1.5s infinite;
@@ -253,9 +229,7 @@ html, body, #root {
   100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
 }
 
-/* ------------------------
-   SIDEBAR HISTORIQUE
------------------------- */
+/* --- SIDEBAR --- */
 .history-sidebar {
   width: 280px;
   background-color: #23272a;
@@ -269,88 +243,39 @@ html, body, #root {
   z-index: 200;
   overflow-y: auto;
 }
+
 .history-sidebar.visible {
   transform: translateX(0);
 }
-.session-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--color-bg-tertiary);
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.session-item:hover {
-  background-color: #5865f2;
-}
-.session-item.active {
-  background-color: var(--color-accent-user);
-}
 
-/* ------------------------
-   RESPONSIVE MOBILE
------------------------- */
+/* --- MOBILE --- */
 @media (max-width: 900px) {
   .chat-header h1 {
     font-size: 1em;
   }
 
-  .messages-display {
-    padding: 10px;
-  }
-
-  .message.ai, .message.user {
+  .message.ai,
+  .message.user {
     max-width: 95%;
   }
 
   .input-area {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
-    padding: 10px;
   }
 
-  .input-area input {
-    width: 100%;
-    font-size: 1em;
-  }
-
+  .input-area input,
   .input-area button {
     width: 100%;
-    padding: 16px;
-    font-size: 1.1em;
   }
 
   .microphone-button {
     width: 70px;
     height: 70px;
-    font-size: 1.7em;
     margin: 0 auto;
   }
 
   .history-sidebar {
     width: 80%;
-  }
-}
-
-/* Petits téléphones */
-@media (max-width: 480px) {
-  .chat-header {
-    padding: 8px;
-  }
-
-  .toggle-history {
-    padding: 6px 10px;
-  }
-
-  .chat-header h1 {
-    font-size: 0.9em;
-  }
-
-  .message {
-    font-size: 0.9em;
   }
 }
