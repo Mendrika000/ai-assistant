@@ -1,0 +1,278 @@
+:root {
+  --color-bg-dark: #1e1f22;
+  --color-bg-secondary: #2b2d31;
+  --color-bg-tertiary: #3a3d43;
+  --color-text-primary: #e0e0e0;
+  --color-accent-user: #4a8ef0;   /* Bleu utilisateur */
+  --color-accent-ai: #1abc9c;     /* Turquoise IA */
+  --color-danger: #e74c3c;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background-color: var(--color-bg-dark);
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* --- CHAT PRINCIPAL --- */
+.chat-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-secondary);
+}
+
+/* --- HEADER --- */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-bg-tertiary);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-bg-dark);
+}
+
+.chat-header h1 {
+  margin: 0;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.3em;
+  color: var(--color-text-primary);
+}
+
+.toggle-history {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-bg-dark);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.toggle-history:hover {
+  background-color: #50545c;
+  transform: scale(1.05);
+}
+
+/* --- MESSAGES --- */
+.messages-display {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* IA à gauche */
+.message.ai {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  align-self: flex-start;
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  max-width: 70%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Utilisateur à droite */
+.message.user {
+  background-color: var(--color-accent-user);
+  color: white;
+  align-self: flex-end;
+  border-radius: 12px;
+  border-bottom-right-radius: 4px;
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  max-width: 70%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.sender-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.85em;
+  opacity: 0.7;
+}
+
+.loading {
+  text-align: center;
+  color: var(--color-accent-ai);
+}
+
+/* --- ZONE INPUT --- */
+.input-area {
+  display: flex; 
+  padding: 15px 20px;
+  background-color: var(--color-bg-dark);
+  border-top: 1px solid #3c3f46;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Champ texte agrandi */
+.input-area input {
+  flex-grow: 1;
+  padding: 16px;
+  border-radius: 30px;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-bg-tertiary);
+  font-size: 1.05em;
+}
+
+.input-area input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent-ai);
+}
+
+/* Boutons agrandis */
+.input-area button {
+  padding: 14px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  background-color: var(--color-accent-ai);
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 1.1em;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.input-area button:hover:not(:disabled) {
+  background-color: #16a085;
+  transform: scale(1.05);
+}
+
+.input-area button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Bouton micro plus grand et arrondi */
+.microphone-button {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border-radius: 50%;
+  font-size: 1.5em;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.microphone-button:hover {
+  background-color: var(--color-accent-ai);
+  color: white;
+}
+
+.microphone-button.listening {
+  background-color: var(--color-danger);
+  animation: pulse 1.5s infinite;
+  color: white;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(231, 76, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+/* --- HISTORIQUE --- */
+.history-sidebar {
+  width: 280px;
+  background-color: #23272a; 
+  color: var(--color-text-primary);
+  padding: 20px;
+  box-shadow: 2px 0 10px var(--color-shadow);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  position: fixed;
+  height: 100%;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.history-sidebar.visible {
+  transform: translateX(0);
+}
+
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-bg-tertiary);
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.session-item:hover {
+  background-color: #5865f2;
+}
+
+.session-item.active {
+  background-color: var(--color-accent-user);
+  font-weight: bold;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .chat-header h1 {
+    font-size: 1em;
+  }
+
+  .message {
+    max-width: 85%;
+    font-size: 0.95em;
+  }
+
+  .input-area {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .input-area input {
+    font-size: 1em;
+    padding: 14px;
+  }
+
+  .input-area button {
+    width: 100%;
+    font-size: 1.1em;
+    padding: 14px 0;
+  }
+
+  .microphone-button {
+    width: 70px;
+    height: 70px;
+    font-size: 1.7em;
+    margin: 0 auto;
+  }
+
+  .history-sidebar {
+    width: 80%;
+  }
+}
